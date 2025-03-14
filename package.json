@@ -9,6 +9,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "6.2.0"
+    "@types/chrome": "0.0.309",
+    "@types/node": "22.13.10",
+    "typescript": "5.8.2",
+    "vite": "6.2.0",
+    "vite-plugin-web-extension": "4.4.3"
+  },
+  "dependencies": {
+    "@google/generative-ai": "0.24.0"
   }
 }

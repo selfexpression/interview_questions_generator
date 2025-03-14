@@ -1,0 +1,102 @@
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  color: #cccccc;
+  background: #202020;
+}
+
+button {
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #cccccc;
+}
+
+span,
+p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  padding: 10px;
+  background: #202020;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.generateBtn {
+  padding: 10px 20px;
+  background-color: #3b42c2;
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  list-style-type: none;
+}
+
+.dontKnowBtn {
+  align-self: center;
+  padding: 2px 5px;
+  background-color: #3b42c2;
+}
+
+.hint {
+  color: #666;
+  font-style: italic;
+  margin: 5px 0;
+}
+
+.loading {
+  width: 35px;
+  --b: 6px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 1px;
+  background: conic-gradient(#0000 10%, #aaaaaa) content-box;
+  mask: repeating-conic-gradient(#0000 0deg,
+      #000 1deg 20deg,
+      #0000 21deg 36deg),
+    radial-gradient(farthest-side,
+      #0000 calc(100% - var(--b) - 1px),
+      #000 calc(100% - var(--b)));
+  -webkit-mask: repeating-conic-gradient(#0000 0deg,
+      #000 1deg 20deg,
+      #0000 21deg 36deg),
+    radial-gradient(farthest-side,
+      #0000 calc(100% - var(--b) - 1px),
+      #000 calc(100% - var(--b)));
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+  animation: load 1s infinite steps(10);
+}
+
+@keyframes load {
+  to {
+    transform: rotate(1turn);
+  }
+}
