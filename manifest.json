@@ -5,10 +5,13 @@
   "description": "Generate interview questions from job postings",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [
-    "https://*.googleapis.com/"
+    "https://*.googleapis.com/",
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "index.html",
