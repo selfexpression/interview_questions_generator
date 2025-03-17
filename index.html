@@ -10,11 +10,62 @@
 </head>
 
 <body>
-  <div class="container">
+  <main class="container">
     <h3>Interview Questions Generator</h2>
       <button id="generateBtn" class="generateBtn">Generate Questions</button>
-      <ol id="questions" class="questions"></ol>
-  </div>
+      <div id="content" class="content">
+        <h4>Technical Questions</h4>
+        <ol class="questions">
+          <li class="question">
+            <span>1. Can you explain how you would optimize the performance of a React application, specifically
+              focusing on functional
+              components and hooks?</span>
+            <button class="dontKnowBtn">
+              Don't know
+            </button>
+            <div class="hint">To optimize a React application using functional components and hooks, I would:
+
+              1. **Use `React.memo`**: Wrap functional components with `React.memo` to prevent unnecessary re-renders
+              when props
+              haven't changed.
+              2. **Optimize hooks**: Use `useMemo` for expensive calculations and `useCallback` for memoizing functions
+              to avoid
+              recreating them on every render.
+              3. **Lazy loading**: Implement `React.lazy` and `Suspense` for code-splitting to load components only when
+              needed,
+              reducing the initial bundle size.
+              4. **Avoid unnecessary state updates**: Ensure state updates are only triggered when necessary to minimize
+              re-renders.
+
+              These strategies help improve performance by reducing re-renders and optimizing resource usage.</div>
+          </li>
+          <li class="question">
+            <span>2. Can you explain how you would optimize the performance of a React application, specifically
+              focusing on
+              functional
+              components and hooks?</span>
+            <button class="dontKnowBtn">
+              Don't know
+            </button>
+            <div class="hint">To optimize a React application using functional components and hooks, I would:
+
+              1. **Use `React.memo`**: Wrap functional components with `React.memo` to prevent unnecessary re-renders
+              when props
+              haven't changed.
+              2. **Optimize hooks**: Use `useMemo` for expensive calculations and `useCallback` for memoizing functions
+              to avoid
+              recreating them on every render.
+              3. **Lazy loading**: Implement `React.lazy` and `Suspense` for code-splitting to load components only when
+              needed,
+              reducing the initial bundle size.
+              4. **Avoid unnecessary state updates**: Ensure state updates are only triggered when necessary to minimize
+              re-renders.
+
+              These strategies help improve performance by reducing re-renders and optimizing resource usage.</div>
+          </li>
+        </ol>
+      </div>
+  </main>
 </body>
 
 </html>

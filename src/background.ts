@@ -1,4 +1,68 @@
-async function injectScriptsToTabs() {
+import OpenAI from 'openai';
+
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+const openai = new OpenAI({
+  baseURL: 'https://api.deepseek.com',
+  apiKey: apiKey,
+});
+
+async function generateJSONContent(
+  prompt: string,
+  structure: Record<string, string>
+) {
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content: `You are a helpful assistant. Your task is to help analyze and study information from vacancies on job search sites, and then provide an answer to the user's current prompt 3. Return the result as a JSON object with the following structure: ${JSON.stringify(
+          structure
+        )}`,
+      },
+      { role: 'user', content: prompt },
+    ],
+    model: 'deepseek-chat',
+    response_format: { type: 'json_object' },
+  });
+
+  return completion.choices[0].message.content;
+}
+
+async function generateAnswer(prompt: string) {
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are a developer interviewing for a job. You need to answer technical and behavioral questions to successfully pass the interview. Your answers should be concise and to the point, no more than 2-3 sentences. Focus on providing clear and actionable information.',
+      },
+      { role: 'user', content: prompt },
+    ],
+    model: 'deepseek-chat',
+  });
+
+  return completion.choices[0].message.content;
+}
+
+chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+  if (message.type === 'GENERATE_ANSWER') {
+    generateAnswer(message.prompt)
+      .then((result) => sendResponse({ result }))
+      .catch((error) => sendResponse({ error: error.message }));
+    return true;
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
+  if (message.type === 'GENERATE_JSON_CONTENT') {
+    generateJSONContent(message.prompt, message.structure)
+      .then((result) => sendResponse({ result }))
+      .catch((error) => sendResponse({ error: error.message }));
+    return true;
+  }
+});
+
+chrome.runtime.onInstalled.addListener(async () => {
   const manifest = chrome.runtime.getManifest();
   if (!manifest.content_scripts) return;
 
@@ -7,7 +71,7 @@ async function injectScriptsToTabs() {
 
     for (const tab of tabs) {
       if (tab.url?.match(/(chrome|chrome-extension):\/\//gi)) {
-        console.error(`Skipping tab with URL: ${tab.url}`);
+        console.warn(`Skipping tab with URL: ${tab.url}`);
         continue;
       }
 
@@ -31,20 +95,12 @@ async function injectScriptsToTabs() {
       }
     }
   }
-}
-
-chrome.runtime.onInstalled.addListener(async () => {
-  await chrome.storage.sync.set({
-    apiKey: 'AIzaSyALXR97xEju1HGpgZlCSuBfjDt5jg8yYTM',
-  });
-
-  await injectScriptsToTabs();
 });
 
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   if (message.type === 'GET_JOB_TEXT') {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tabId = tabs[0].id;
+      const tabId = tabs[0]?.id;
       const tabUrl = tabs[0]?.url;
 
       if (tabUrl?.startsWith('chrome://')) {

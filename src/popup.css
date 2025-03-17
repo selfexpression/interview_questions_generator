@@ -40,6 +40,14 @@ p {
   background-color: #3b42c2;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .questions {
   display: flex;
   flex-direction: column;

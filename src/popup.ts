@@ -1,47 +1,67 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-async function analyzeJobText(jobText: string) {
-  const prompt = `Analyze the following job description and extract key skills and requirements:\n\n${jobText}`;
-  const analysis = await generateContent(prompt);
-  return analysis;
+interface IParsedResponse {
+  technicalQuestions: string[];
+  behavioralQuestions: string[];
 }
 
-async function generateQuestions(jobText: string) {
-  const prompt = `Generate 5 technical and 5 behavioral interview questions based on the following job description:\n\n${jobText}`;
-  const questions = await generateContent(prompt);
-  return questions?.split('\n').filter((q) => q.trim() !== '');
-}
+async function generateQuestions(jobText: string): Promise<IParsedResponse> {
+  const prompt = `
+1. Analyze the following job description and extract key skills and requirements:
+---
+${jobText}
+---
 
-async function generateContent(prompt: string) {
-  const apiKey: string = await new Promise((resolve) => {
-    chrome.storage.sync.get(['apiKey'], (result) => {
-      resolve(result.apiKey);
-    });
+2. Based on the extracted skills and requirements, generate:
+- 3 technical interview questions
+- 3 behavioral interview questions
+`;
+
+  const structure = { technicalQuestions: [], behavioralQuestions: [] };
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      { type: 'GENERATE_JSON_CONTENT', prompt, structure },
+      (response) => {
+        if (response.error) {
+          console.error('Error:', response.error);
+          reject(response.error);
+        } else {
+          try {
+            const parsedResponse: IParsedResponse = JSON.parse(response.result);
+            resolve(parsedResponse);
+          } catch (error) {
+            console.error('Failed to parse LLM response:', error);
+            reject('Invalid response format from LLM');
+          }
+        }
+      }
+    );
   });
-
-  if (!apiKey) {
-    console.error('API key is not defined.');
-    return;
-  }
-
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-  try {
-    const result = await model.generateContent(prompt);
-    return result.response.text();
-  } catch (error) {
-    console.error('Error generating content:', error);
-  }
 }
 
-function displayQuestions(questions: string[]) {
-  const questionsOl = document.getElementById('questions');
+async function generateAnswer(question: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      { type: 'GENERATE_ANSWER', prompt: question },
+      (response) => {
+        if (response.error) {
+          console.error('Error:', response.error);
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      }
+    );
+  });
+}
 
-  if (!questionsOl) {
-    console.error('Element with id "questions" not found.');
-    return;
-  }
+function displayQuestions(questions: string[], type: string) {
+  const contentDiv = document.getElementById('content');
+
+  const h4 = document.createElement('h4');
+  h4.innerText = `${type} Questions`;
+
+  const questionsOl = document.createElement('ol');
+  questionsOl.className = 'questions';
 
   questionsOl.innerHTML = '';
   questions.forEach((q, index) => {
@@ -49,21 +69,21 @@ function displayQuestions(questions: string[]) {
     li.className = 'question';
 
     const span = document.createElement('span');
-    span.innerText = `Question ${index + 1}: ${q}`;
+    span.innerText = `${index + 1}. ${q}`;
 
     const dontKnowBtn = document.createElement('button');
     dontKnowBtn.className = 'dontKnowBtn';
     dontKnowBtn.innerText = "Don't know";
 
-    questionsOl.appendChild(li);
     li.appendChild(span);
     li.appendChild(dontKnowBtn);
+    questionsOl.appendChild(li);
 
     dontKnowBtn.addEventListener('click', async () => {
       dontKnowBtn.classList.add('loading');
       dontKnowBtn.innerText = '';
 
-      const hintAnswer = await generateContent(q);
+      const hintAnswer = await generateAnswer(q);
 
       if (hintAnswer) {
         dontKnowBtn.style.display = 'none';
@@ -74,6 +94,11 @@ function displayQuestions(questions: string[]) {
       }
     });
   });
+
+  if (contentDiv) {
+    contentDiv.appendChild(h4);
+    contentDiv.appendChild(questionsOl);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -93,8 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateBtn.style.display = 'none';
 
-    if (questions) {
-      displayQuestions(questions);
-    }
+    displayQuestions(questions.technicalQuestions, 'Technical');
+    displayQuestions(questions.behavioralQuestions, 'Behavioral');
   });
 });

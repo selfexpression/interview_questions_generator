@@ -16,6 +16,6 @@
     "vite-plugin-web-extension": "4.4.3"
   },
   "dependencies": {
-    "@google/generative-ai": "0.24.0"
+    "openai": "^4.87.3"
   }
 }
