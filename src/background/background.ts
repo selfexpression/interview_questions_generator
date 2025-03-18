@@ -5,8 +5,7 @@ import type { MessageRequest } from '../shared/types/messages';
 
 chrome.runtime.onMessage.addListener(
   (message: MessageRequest, _, sendResponse) => {
-    const handlers = messageHandlers();
-    const handler = handlers[message.type];
+    const handler = messageHandlers[message.type];
 
     if (!handler) {
       sendResponse({
@@ -25,6 +24,5 @@ chrome.runtime.onMessage.addListener(
 );
 
 chrome.runtime.onInstalled.addListener(() => {
-  const handlers = installHandlers();
-  handlers.onInstalled();
+  installHandlers.onInstalled();
 });

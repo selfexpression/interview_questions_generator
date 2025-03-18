@@ -27,7 +27,7 @@
         "<all_urls>"
       ],
       "js": [
-        "src/content.ts"
+        "src/content/content.ts"
       ]
     }
   ],

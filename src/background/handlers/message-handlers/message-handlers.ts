@@ -11,7 +11,7 @@ type MessageHandler = (
   sendResponse: (response: MessageResponse) => void
 ) => Promise<void> | void;
 
-export const generateJSONContent = async (
+const generateJSONContent = async (
   message: MessageRequest,
   sendResponse: (response: MessageResponse) => void
 ): Promise<void> => {
@@ -28,7 +28,7 @@ export const generateJSONContent = async (
   }
 };
 
-export const generateAnswer = async (
+const generateAnswer = async (
   message: MessageRequest,
   sendResponse: (response: MessageResponse) => void
 ): Promise<void> => {
@@ -42,7 +42,7 @@ export const generateAnswer = async (
   }
 };
 
-export const getJobText = (
+const getJobText = (
   _: MessageRequest,
   sendResponse: (response: MessageResponse) => void
 ): void => {
@@ -67,10 +67,8 @@ export const getJobText = (
   });
 };
 
-export const messageHandlers = (): Record<string, MessageHandler> => {
-  return {
-    [MessageType.GENERATE_ANSWER]: generateAnswer,
-    [MessageType.GENERATE_JSON_CONTENT]: generateJSONContent,
-    [MessageType.GET_JOB_TEXT]: getJobText,
-  };
+export const messageHandlers: Record<string, MessageHandler> = {
+  [MessageType.GENERATE_ANSWER]: generateAnswer,
+  [MessageType.GENERATE_JSON_CONTENT]: generateJSONContent,
+  [MessageType.GET_JOB_TEXT]: getJobText,
 };

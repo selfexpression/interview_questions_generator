@@ -27,8 +27,6 @@ export const handleInstall = async (): Promise<void> => {
   }
 };
 
-export const installHandlers = (): Record<string, () => Promise<void>> => {
-  return {
-    onInstalled: handleInstall,
-  };
+export const installHandlers = {
+  onInstalled: handleInstall,
 };
