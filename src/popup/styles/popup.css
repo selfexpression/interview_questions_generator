@@ -1,13 +1,17 @@
+html,
 body {
-  width: 500px;
-  height: 100%;
+  min-width: 450px;
+  height: auto;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  border-radius: 10px;
   font-family: Arial, sans-serif;
+  background-color: #202020;
   color: #cccccc;
-  background: #202020;
+}
+
+* {
+  box-sizing: inherit;
 }
 
 button {
@@ -28,10 +32,11 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 450px;
   width: 100%;
   height: 100%;
   padding: 10px;
-  background: #202020;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -43,7 +48,7 @@ p {
 .content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 10px;
 }
