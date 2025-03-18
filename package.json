@@ -16,6 +16,6 @@
     "vite-plugin-web-extension": "4.4.3"
   },
   "dependencies": {
-    "openai": "^4.87.3"
+    "openai": "4.87.3"
   }
 }
