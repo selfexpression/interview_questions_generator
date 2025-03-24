@@ -36,7 +36,8 @@ class LLMService {
 
   public async generateJSONContent(
     prompt: string,
-    structure: Record<string, string[]>
+    structure: Record<string, string[]>,
+    language: string
   ): Promise<string | null | undefined> {
     try {
       const completion = await this.openAI?.chat.completions.create({
@@ -45,7 +46,9 @@ class LLMService {
             role: 'system',
             content: `${
               SYSTEM_PROMPTS.GENERATE_JSON_CONTENT
-            } Structure: ${JSON.stringify(structure)}`,
+            } Structure: ${JSON.stringify(
+              structure
+            )} Generate the response in ${language} language.`,
           },
           { role: 'user', content: prompt },
         ],
@@ -60,14 +63,15 @@ class LLMService {
   }
 
   public async generateAnswer(
-    prompt: string
+    prompt: string,
+    language: string
   ): Promise<string | null | undefined> {
     try {
       const completion = await this.openAI?.chat.completions.create({
         messages: [
           {
             role: 'system',
-            content: SYSTEM_PROMPTS.GENERATE_ANSWER,
+            content: `${SYSTEM_PROMPTS.GENERATE_ANSWER} Generate the response in ${language} language.`,
           },
           { role: 'user', content: prompt },
         ],

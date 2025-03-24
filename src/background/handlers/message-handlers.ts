@@ -3,13 +3,9 @@ import {
   MessageType,
   MessageRequest,
   MessageResponse,
+  MessageHandler,
 } from '../../shared/types/messages';
 import { handleError } from '../../shared/error-handler';
-
-type MessageHandler = (
-  message: MessageRequest,
-  sendResponse: (response: MessageResponse) => void
-) => Promise<void> | void;
 
 const generateJSONContent = async (
   message: MessageRequest,
@@ -18,7 +14,8 @@ const generateJSONContent = async (
   try {
     const result = await LLMServiceInstance.generateJSONContent(
       message.prompt ?? '',
-      message.structure ?? {}
+      message.structure ?? {},
+      message.language || ''
     );
     sendResponse(
       result ? { result } : { error: 'Error generating JSON content' }
@@ -34,7 +31,8 @@ const generateAnswer = async (
 ): Promise<void> => {
   try {
     const result = await LLMServiceInstance.generateAnswer(
-      message.prompt || ''
+      message.prompt || '',
+      message.language || ''
     );
     sendResponse(result ? { result } : { error: 'Error generating answer' });
   } catch (error) {
@@ -67,8 +65,34 @@ const getJobText = (
   });
 };
 
+const getPageLanguage = (
+  _: MessageRequest,
+  sendResponse: (response: MessageResponse) => void
+): void => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs[0];
+    if (!tab.id) {
+      sendResponse({ error: 'No active tab found' });
+      return;
+    }
+
+    if (tab.url?.startsWith('chrome://')) {
+      return sendResponse({
+        error: 'Cannot extract language from chrome:// pages',
+      });
+    }
+
+    chrome.tabs.sendMessage(
+      tab.id,
+      { type: MessageType.EXTRACT_LANGUAGE },
+      sendResponse
+    );
+  });
+};
+
 export const messageHandlers: Record<string, MessageHandler> = {
   [MessageType.GENERATE_ANSWER]: generateAnswer,
   [MessageType.GENERATE_JSON_CONTENT]: generateJSONContent,
-  [MessageType.GET_JOB_TEXT]: getJobText,
+  [MessageType.EXTRACT_TEXT]: getJobText,
+  [MessageType.EXTRACT_LANGUAGE]: getPageLanguage,
 };

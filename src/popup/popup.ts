@@ -1,8 +1,7 @@
 import { displayQuestions } from './view/display-questions';
 import { messageHandlers } from './handlers';
-import { MessageType } from '../shared/types/messages';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const generateBtn = document.getElementById('generateBtn');
   const contentDiv = document.getElementById('content');
 
@@ -11,18 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
     generateBtn.textContent = '';
 
     try {
-      const jobText = await messageHandlers.sendMessage<string>({
-        type: MessageType.GET_JOB_TEXT,
-      });
-      const questions = await messageHandlers.generateQuestions(jobText);
+      const lang = await messageHandlers.getPageLanguage();
+      const jobText = await messageHandlers.getJobText();
+      const questions = await messageHandlers.generateQuestions(jobText, lang);
       generateBtn.style.display = 'none';
 
       if (contentDiv) {
-        displayQuestions(questions.technicalQuestions, 'Technical', contentDiv);
+        displayQuestions(
+          questions.technicalQuestions,
+          'Technical',
+          contentDiv,
+          lang
+        );
         displayQuestions(
           questions.behavioralQuestions,
           'Behavioral',
-          contentDiv
+          contentDiv,
+          lang
         );
       }
     } catch (error) {

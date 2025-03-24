@@ -1,9 +1,20 @@
-import { MessageType } from '../shared/types/messages';
+import { messageHandlers } from './handlers';
+import { handleError } from '../shared/error-handler';
+import type { MessageRequest } from '../shared/types/messages';
 
-chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-  if (message.type === MessageType.EXTRACT_TEXT) {
-    const jobText = document.body.innerText;
-    sendResponse({ text: jobText });
+chrome.runtime.onMessage.addListener(
+  (message: MessageRequest, _, sendResponse) => {
+    const handler = messageHandlers[message.type];
+
+    if (!handler) {
+      sendResponse({ error: `No handler for message type: ${message.type}` });
+      return true;
+    }
+
+    Promise.resolve(handler(message, sendResponse)).catch((error) =>
+      sendResponse(handleError(error))
+    );
+
+    return true;
   }
-  return true;
-});
+);

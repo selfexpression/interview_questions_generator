@@ -3,7 +3,8 @@ import { messageHandlers } from '../handlers/message-handlers';
 export const displayQuestions = (
   questions: string[],
   type: string,
-  container: HTMLElement
+  container: HTMLElement,
+  language: string
 ) => {
   const h4 = document.createElement('h4');
   h4.textContent = `${type} Questions`;
@@ -28,7 +29,7 @@ export const displayQuestions = (
     btn.addEventListener('click', async () => {
       btn.classList.add('loading');
       btn.textContent = '';
-      const answer = await messageHandlers.generateAnswer(q);
+      const answer = await messageHandlers.generateAnswer(q, language);
       btn.remove();
       const hint = document.createElement('p');
       hint.className = 'hint';
