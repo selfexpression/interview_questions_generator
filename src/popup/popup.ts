@@ -1,5 +1,5 @@
-import { displayQuestions } from './view';
-import { messageHandlers } from './handlers/message-handlers';
+import { displayQuestions } from './view/display-questions';
+import { messageHandlers } from './handlers';
 import { MessageType } from '../shared/types/messages';
 
 document.addEventListener('DOMContentLoaded', () => {

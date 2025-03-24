@@ -1,4 +1,4 @@
-export const handleInstall = async (): Promise<void> => {
+export const scriptInjection = async (): Promise<void> => {
   const manifest = chrome.runtime.getManifest();
   const contentScripts = manifest.content_scripts ?? [];
 
@@ -28,5 +28,5 @@ export const handleInstall = async (): Promise<void> => {
 };
 
 export const installHandlers = {
-  onInstalled: handleInstall,
+  scriptInjection,
 };

@@ -1,5 +1,5 @@
 {
-  "name": "ai-interview_chrome_extension",
+  "name": "interview-questions-generator",
   "private": true,
   "version": "0.0.0",
   "type": "module",

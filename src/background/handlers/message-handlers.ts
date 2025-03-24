@@ -1,10 +1,10 @@
-import { LLMServiceInstance } from '../../../services/llm';
+import { LLMServiceInstance } from '../../services/llm';
 import {
   MessageType,
   MessageRequest,
   MessageResponse,
-} from '../../../shared/types/messages';
-import { handleError } from '../../../shared/error-handler';
+} from '../../shared/types/messages';
+import { handleError } from '../../shared/error-handler';
 
 type MessageHandler = (
   message: MessageRequest,

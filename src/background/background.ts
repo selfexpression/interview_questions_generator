@@ -1,5 +1,5 @@
-import { messageHandlers } from './handlers/message-handlers';
-import { installHandlers } from './handlers/install-handlers';
+import { messageHandlers } from './handlers';
+import { installHandlers } from './handlers';
 import { handleError } from '../shared/error-handler';
 import type { MessageRequest } from '../shared/types/messages';
 
@@ -24,5 +24,5 @@ chrome.runtime.onMessage.addListener(
 );
 
 chrome.runtime.onInstalled.addListener(() => {
-  installHandlers.onInstalled();
+  installHandlers.scriptInjection();
 });
