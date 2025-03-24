@@ -1,6 +1,6 @@
 ### Installation Guide:
 
-- `$ git clone: https://github.com/selfexpression/interview_questions_generator.git`
+- `$ git clone https://github.com/selfexpression/interview_questions_generator.git`
 - `$ npm i`
 - Create a `.env` file in the root directory with your OpenAI API key: `VITE_OPENAI_API_KEY=your_openai_api_key_here`
 - `$ npm run build`
